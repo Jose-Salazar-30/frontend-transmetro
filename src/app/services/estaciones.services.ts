@@ -16,7 +16,7 @@ export interface Estacion {
 })
 export class EstacionesService {
 
-  private apiUrl = 'http://localhost:3000/api/estaciones';
+  private apiUrl = 'https://backend-transmetro.onrender.com/api/estaciones';
 
   constructor(private http: HttpClient) { }
 

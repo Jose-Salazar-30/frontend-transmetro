@@ -8,7 +8,7 @@ import { Empleado, TipoEmpleado } from '../models/empleados';
 })
 export class EmpleadosService {
 
-  private apiUrl = 'http://localhost:3000/api/empleados';
+  private apiUrl = 'https://backend-transmetro.onrender.com/api/empleados';
 
   constructor(private http: HttpClient) {}
 

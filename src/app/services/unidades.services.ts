@@ -18,7 +18,7 @@ export interface Unidad {
 })
 export class UnidadesService {
 
-  private apiUrl = 'http://localhost:3000/api/unidades';
+  private apiUrl = 'https://backend-transmetro.onrender.com/api/unidades';
 
   constructor(private http: HttpClient) { }
 

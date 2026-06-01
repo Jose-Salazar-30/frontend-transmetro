@@ -12,7 +12,7 @@ import {
 })
 export class AsignacionesService {
 
-  private apiUrl = 'http://localhost:3000/api/asignaciones';
+  private apiUrl = 'https://backend-transmetro.onrender.com/api/asignaciones';
 
   constructor(private http: HttpClient) {}
 

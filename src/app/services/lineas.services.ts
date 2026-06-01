@@ -16,7 +16,7 @@ export interface Linea {
 })
 export class LineasService {
 
-  private apiUrl = 'http://localhost:3000/api/lineas';
+  private apiUrl = 'https://backend-transmetro.onrender.com/api/lineas';
 
   constructor(private http: HttpClient) { }
 

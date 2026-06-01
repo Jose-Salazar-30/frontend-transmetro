@@ -9,7 +9,7 @@ import { Tarjeta } from '../models/tarjetas';
 })
 export class TarjetasService {
 
-  private apiUrl = 'http://localhost:3000/api/tarjetas';
+  private apiUrl = 'https://backend-transmetro.onrender.com/api/tarjetas';
 
   constructor(private http: HttpClient) {}
 
