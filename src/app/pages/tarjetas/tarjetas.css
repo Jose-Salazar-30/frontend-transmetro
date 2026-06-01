@@ -1,0 +1,140 @@
+.tarjetas-page {
+  padding: 28px;
+}
+
+.titulo-pagina {
+  font-size: 20px;
+  font-weight: 700;
+  margin-bottom: 22px;
+  color: #111827;
+}
+
+.card-formulario,
+.card-tabla {
+  background: #f7f7fb;
+  border-radius: 12px;
+  margin-bottom: 22px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+}
+
+.card-formulario h3,
+.card-tabla h3 {
+  font-size: 21px;
+  font-weight: 500;
+  margin: 0;
+  color: #111827;
+}
+
+.subtitulo {
+  font-size: 14px;
+  font-weight: 600;
+  margin: 3px 0 18px;
+  color: #111827;
+}
+
+.formulario-tarjeta {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.formulario-tarjeta mat-form-field {
+  width: 100%;
+}
+
+.botones-formulario {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.botones-formulario button {
+  border-radius: 20px;
+  padding: 0 18px;
+  height: 40px;
+  font-weight: 600;
+}
+
+.buscador {
+  width: 100%;
+  margin-bottom: 18px;
+}
+
+.tabla-contenedor {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.tabla-tarjetas {
+  width: 100%;
+  background: #ffffff;
+}
+
+th.mat-mdc-header-cell {
+  font-weight: 700;
+  color: #111827;
+}
+
+td.mat-mdc-cell,
+th.mat-mdc-header-cell {
+  padding: 12px 16px;
+  border-bottom: 1px solid #9ca3af;
+}
+
+.estado {
+  display: inline-block;
+  padding: 7px 13px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.estado.activa {
+  background: #198754;
+  color: white;
+}
+
+.estado.inactiva {
+  background: #dc3545;
+  color: white;
+}
+
+.estado.bloqueada {
+  background: #f59e0b;
+  color: white;
+}
+
+.sin-datos {
+  text-align: center;
+  padding: 25px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+mat-paginator {
+  background: #ffffff;
+}
+
+@media (max-width: 1200px) {
+  .formulario-tarjeta {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 700px) {
+  .tarjetas-page {
+    padding: 16px;
+  }
+
+  .formulario-tarjeta {
+    grid-template-columns: 1fr;
+  }
+
+  .botones-formulario {
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+}

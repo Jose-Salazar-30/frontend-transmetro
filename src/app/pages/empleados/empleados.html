@@ -1,0 +1,222 @@
+<div class="empleados-page">
+
+  <h2 class="titulo-pagina">Gestión de Empleados del Transmetro</h2>
+
+  <mat-card class="card-formulario">
+    <mat-card-content>
+
+      <h3>{{ modoEditar ? 'Actualizar Empleado' : 'Nuevo Empleado' }}</h3>
+      <p class="subtitulo">
+        {{ modoEditar ? 'Modifique los datos del empleado seleccionado' : 'Registre un nuevo empleado del sistema' }}
+      </p>
+
+      <form (ngSubmit)="guardarEmpleado()" class="formulario-empleado">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input
+            matInput
+            name="nombre"
+            [(ngModel)]="empleado.nombre"
+            placeholder="Ingrese el nombre">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Apellido</mat-label>
+          <input
+            matInput
+            name="apellido"
+            [(ngModel)]="empleado.apellido"
+            placeholder="Ingrese el apellido">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>DPI</mat-label>
+          <input
+            matInput
+            name="dpi"
+            [(ngModel)]="empleado.dpi"
+            placeholder="Ingrese el DPI">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Teléfono</mat-label>
+          <input
+            matInput
+            name="telefono"
+            [(ngModel)]="empleado.telefono"
+            placeholder="Ingrese el teléfono">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Correo</mat-label>
+          <input
+            matInput
+            type="email"
+            name="correo"
+            [(ngModel)]="empleado.correo"
+            placeholder="Ingrese el correo">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Dirección</mat-label>
+          <input
+            matInput
+            name="direccion"
+            [(ngModel)]="empleado.direccion"
+            placeholder="Ingrese la dirección">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Tipo de empleado</mat-label>
+          <mat-select
+            name="id_tipo_empleado"
+            [(ngModel)]="empleado.id_tipo_empleado">
+            <mat-option [value]="0">Seleccione un tipo</mat-option>
+            <mat-option
+              *ngFor="let tipo of tiposEmpleado"
+              [value]="tipo.id">
+              {{ tipo.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <mat-select
+            name="estado"
+            [(ngModel)]="empleado.estado">
+            <mat-option value="Activo">Activo</mat-option>
+            <mat-option value="Inactivo">Inactivo</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="botones-formulario">
+          <button mat-raised-button color="primary" type="submit">
+            <mat-icon>{{ modoEditar ? 'edit' : 'save' }}</mat-icon>
+            {{ modoEditar ? 'Actualizar Empleado' : 'Guardar Empleado' }}
+          </button>
+
+          <button
+            mat-stroked-button
+            color="warn"
+            type="button"
+            (click)="limpiarFormulario()">
+            <mat-icon>close</mat-icon>
+            Cancelar
+          </button>
+        </div>
+
+      </form>
+
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card-tabla">
+    <mat-card-content>
+
+      <h3>Listado de Empleados</h3>
+      <p class="subtitulo">Datos cargados desde PostgreSQL</p>
+
+      <mat-form-field appearance="outline" class="buscador">
+        <mat-label>Buscar empleado</mat-label>
+        <input
+          matInput
+          placeholder="Buscar empleado"
+          (keyup)="aplicarFiltro($event)">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="tabla-contenedor">
+        <table mat-table [dataSource]="dataSource" class="tabla-empleados">
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>IDENTIFICACIÓN</th>
+            <td mat-cell *matCellDef="let empleado">{{ empleado.id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="nombreCompleto">
+            <th mat-header-cell *matHeaderCellDef>Nombre completo</th>
+            <td mat-cell *matCellDef="let empleado">
+              {{ empleado.nombre }} {{ empleado.apellido }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dpi">
+            <th mat-header-cell *matHeaderCellDef>DPI</th>
+            <td mat-cell *matCellDef="let empleado">{{ empleado.dpi }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="telefono">
+            <th mat-header-cell *matHeaderCellDef>Teléfono</th>
+            <td mat-cell *matCellDef="let empleado">{{ empleado.telefono }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="correo">
+            <th mat-header-cell *matHeaderCellDef>Correo</th>
+            <td mat-cell *matCellDef="let empleado">{{ empleado.correo }}</td>
+          </ng-container>
+
+         <ng-container matColumnDef="direccion">
+            <th mat-header-cell *matHeaderCellDef>Dirección</th>
+            <td mat-cell *matCellDef="let empleado">{{ empleado.direccion }}</td>
+         </ng-container>
+
+          <ng-container matColumnDef="tipo">
+            <th mat-header-cell *matHeaderCellDef>Tipo</th>
+            <td mat-cell *matCellDef="let empleado">{{ empleado.tipo_empleado }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let empleado">
+              <span
+                class="estado"
+                [class.activo]="empleado.estado === 'Activo'"
+                [class.inactivo]="empleado.estado === 'Inactivo'">
+                {{ empleado.estado }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let empleado">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="editarEmpleado(empleado)">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="eliminarEmpleado(empleado.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell sin-datos" colspan="9">
+              No hay empleados registrados
+            </td>
+          </tr>
+
+        </table>
+
+        <mat-paginator
+          [pageSizeOptions]="[5, 10, 20]"
+          [pageSize]="5"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</div>

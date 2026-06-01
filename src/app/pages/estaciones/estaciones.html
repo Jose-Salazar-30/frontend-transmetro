@@ -1,0 +1,196 @@
+<div class="estaciones-container">
+
+  <h2>Gestión de Estaciones del Transmetro</h2>
+
+  <!-- FORMULARIO CREAR -->
+  <mat-card class="form-card" *ngIf="!estacionEditando">
+    <mat-card-header>
+      <mat-card-title>Nueva Estación</mat-card-title>
+      <mat-card-subtitle>Registre una nueva estación del sistema</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="form-grid">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput [(ngModel)]="nuevaEstacion.nombre" placeholder="Ej: Estación Centra Sur">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ubicación</mat-label>
+          <input matInput [(ngModel)]="nuevaEstacion.ubicacion" placeholder="Ej: Villa Nueva">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Línea</mat-label>
+          <mat-select [(ngModel)]="nuevaEstacion.linea_id">
+            <mat-option [value]="0" disabled>Seleccione una línea</mat-option>
+            <mat-option *ngFor="let linea of lineas" [value]="linea.id">
+              {{ linea.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <mat-select [(ngModel)]="nuevaEstacion.estado">
+            <mat-option [value]="true">Activa</mat-option>
+            <mat-option [value]="false">Inactiva</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" (click)="guardarEstacion()">
+        <mat-icon>save</mat-icon>
+        Guardar Estación
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- FORMULARIO EDITAR -->
+  <mat-card class="form-card edit-card" *ngIf="estacionEditando">
+    <mat-card-header>
+      <mat-card-title>Editar Estación</mat-card-title>
+      <mat-card-subtitle>Modifica la información seleccionada</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <div class="form-grid">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre</mat-label>
+          <input matInput [(ngModel)]="estacionEditando.nombre">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Ubicación</mat-label>
+          <input matInput [(ngModel)]="estacionEditando.ubicacion">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Línea</mat-label>
+          <mat-select [(ngModel)]="estacionEditando.linea_id">
+            <mat-option *ngFor="let linea of lineas" [value]="linea.id">
+              {{ linea.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <mat-select [(ngModel)]="estacionEditando.estado">
+            <mat-option [value]="true">Activa</mat-option>
+            <mat-option [value]="false">Inactiva</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+      </div>
+    </mat-card-content>
+
+    <mat-card-actions align="end">
+      <button mat-raised-button color="primary" (click)="actualizarEstacion()">
+        <mat-icon>check</mat-icon>
+        Actualizar
+      </button>
+
+      <button mat-raised-button color="warn" (click)="cancelarEdicion()">
+        <mat-icon>close</mat-icon>
+        Cancelar
+      </button>
+    </mat-card-actions>
+  </mat-card>
+
+  <!-- TABLA -->
+  <mat-card class="table-card">
+    <mat-card-header>
+      <mat-card-title>Listado de Estaciones</mat-card-title>
+      <mat-card-subtitle>Datos cargados desde PostgreSQL</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+
+      <mat-form-field appearance="outline" class="filter-field">
+        <mat-label>Buscar estación</mat-label>
+        <input matInput (keyup)="aplicarFiltro($event)" placeholder="Buscar por nombre, ubicación o línea">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="table-responsive">
+
+        <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z2">
+
+          <!-- ID -->
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let estacion">{{ estacion.id }}</td>
+          </ng-container>
+
+          <!-- Nombre -->
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Nombre</th>
+            <td mat-cell *matCellDef="let estacion">{{ estacion.nombre }}</td>
+          </ng-container>
+
+          <!-- Ubicación -->
+          <ng-container matColumnDef="ubicacion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ubicación</th>
+            <td mat-cell *matCellDef="let estacion">{{ estacion.ubicacion }}</td>
+          </ng-container>
+
+          <!-- Línea -->
+          <ng-container matColumnDef="linea_nombre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Línea</th>
+            <td mat-cell *matCellDef="let estacion">{{ estacion.linea_nombre }}</td>
+          </ng-container>
+
+          <!-- Estado -->
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+            <td mat-cell *matCellDef="let estacion">
+              <mat-chip [class.activa]="estacion.estado" [class.inactiva]="!estacion.estado">
+                {{ estacion.estado ? 'Activa' : 'Inactiva' }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <!-- Acciones -->
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let estacion">
+
+              <button mat-icon-button color="primary" (click)="editarEstacion(estacion)">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button mat-icon-button color="warn" (click)="eliminarEstacion(estacion.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+        </table>
+
+      </div>
+
+      <mat-paginator
+        [pageSize]="5"
+        [pageSizeOptions]="[5, 10, 20]"
+        showFirstLastButtons>
+      </mat-paginator>
+
+      <div class="empty-message" *ngIf="dataSource.data.length === 0 && !cargando">
+        No hay estaciones registradas.
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</div>

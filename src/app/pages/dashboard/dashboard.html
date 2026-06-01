@@ -1,0 +1,59 @@
+<section class="dashboard-header">
+    <div>
+        <h1>Dashboard</h1>
+        <p>Resumen general del Sistema de Control de Transmetro</p>
+    </div>
+
+    <button mat-raised-button color="primary">
+        <mat-icon>add</mat-icon>
+        Nuevo registro
+    </button>
+
+    <section class="cards-grid">
+        @for (card of cards; track card.titulo) {
+            <mat-card class="dashboard-card">
+                <mat-card-content>
+                    <div class="card-content">
+                        <div>
+                            <p class="card-title">{{ card.titulo }}</p>
+                            <h2>{{ card.valor }}</h2>
+                            <p class="card-descripcion">{{ card.descripcion }}</p>
+                        </div>
+
+                        <div class="card-icon">
+                            <mat-icon>{{ card.icono }}</mat-icon>
+                        </div>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        }
+    </section>
+
+    <section class="summary-section">
+        <mat-card>
+            <mat-card-header>
+                <mat-card-title>Estado general del sistema</mat-card-title>
+                <mat-card-subtitle>Informacion Operativa inicial</mat-card-subtitle>
+            </mat-card-header>
+
+            <mat-card-content>
+                <div class="summary-grid">
+                    <div class="summary-item success">
+                        <mat-icon>check_circle</mat-icon>
+                        <span>Sistema Activo</span>
+                    </div>
+                </div>
+
+                <div class="summary-item warning">
+                    <mat-icon>warning</mat-icon>
+                    <span>4 alertas pendientes</span>
+                </div>
+
+                <div class="sumary-item info">
+                    <mat-icon>sync</mat-icon>
+                    <span>Datos listos para sincronizar con backend</span>
+                </div>
+            </mat-card-content>
+        </mat-card>
+    </section>
+</section>

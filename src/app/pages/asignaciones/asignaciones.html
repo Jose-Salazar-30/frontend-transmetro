@@ -1,0 +1,200 @@
+<div class="asignaciones-page">
+
+  <h2 class="titulo-pagina">Gestión de Asignaciones del Transmetro</h2>
+
+  <mat-card class="card-formulario">
+    <mat-card-content>
+
+      <h3>{{ modoEditar ? 'Actualizar Asignación' : 'Nueva Asignación' }}</h3>
+      <p class="subtitulo">
+        {{ modoEditar ? 'Modifique los datos de la asignación seleccionada' : 'Registre una nueva asignación del sistema' }}
+      </p>
+
+      <form (ngSubmit)="guardarAsignacion()" class="formulario-asignacion">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Empleado / Piloto</mat-label>
+          <mat-select
+            name="id_empleado"
+            [(ngModel)]="asignacion.id_empleado">
+            <mat-option [value]="0">Seleccione un empleado</mat-option>
+            <mat-option
+              *ngFor="let empleado of empleados"
+              [value]="empleado.id">
+              {{ empleado.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Unidad / Autobús</mat-label>
+          <mat-select
+            name="id_unidad"
+            [(ngModel)]="asignacion.id_unidad">
+            <mat-option [value]="0">Seleccione una unidad</mat-option>
+            <mat-option
+              *ngFor="let unidad of unidades"
+              [value]="unidad.id">
+              {{ unidad.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Línea</mat-label>
+          <mat-select
+            name="id_linea"
+            [(ngModel)]="asignacion.id_linea">
+            <mat-option [value]="0">Seleccione una línea</mat-option>
+            <mat-option
+              *ngFor="let linea of lineas"
+              [value]="linea.id">
+              {{ linea.nombre }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de asignación</mat-label>
+          <input
+            matInput
+            type="date"
+            name="fecha_asignacion"
+            [(ngModel)]="asignacion.fecha_asignacion">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <mat-select
+            name="estado"
+            [(ngModel)]="asignacion.estado">
+            <mat-option value="Activa">Activa</mat-option>
+            <mat-option value="Inactiva">Inactiva</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="botones-formulario">
+          <button mat-raised-button color="primary" type="submit">
+            <mat-icon>{{ modoEditar ? 'edit' : 'save' }}</mat-icon>
+            {{ modoEditar ? 'Actualizar Asignación' : 'Guardar Asignación' }}
+          </button>
+
+          <button
+            mat-stroked-button
+            color="warn"
+            type="button"
+            (click)="limpiarFormulario()">
+            <mat-icon>close</mat-icon>
+            Cancelar
+          </button>
+        </div>
+
+      </form>
+
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card-tabla">
+    <mat-card-content>
+
+      <h3>Listado de Asignaciones</h3>
+      <p class="subtitulo">Datos cargados desde PostgreSQL</p>
+
+      <mat-form-field appearance="outline" class="buscador">
+        <mat-label>Buscar asignación</mat-label>
+        <input
+          matInput
+          placeholder="Buscar asignación"
+          (keyup)="aplicarFiltro($event)">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="tabla-contenedor">
+        <table mat-table [dataSource]="dataSource" class="tabla-asignaciones">
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>IDENTIFICACIÓN</th>
+            <td mat-cell *matCellDef="let asignacion">{{ asignacion.id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="empleado">
+            <th mat-header-cell *matHeaderCellDef>Empleado / Piloto</th>
+            <td mat-cell *matCellDef="let asignacion">
+              {{ asignacion.empleado }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="unidad">
+            <th mat-header-cell *matHeaderCellDef>Unidad</th>
+            <td mat-cell *matCellDef="let asignacion">
+              {{ asignacion.unidad }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="linea">
+            <th mat-header-cell *matHeaderCellDef>Línea</th>
+            <td mat-cell *matCellDef="let asignacion">
+              {{ asignacion.linea }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fecha">
+            <th mat-header-cell *matHeaderCellDef>Fecha</th>
+            <td mat-cell *matCellDef="let asignacion">
+              {{ asignacion.fecha_asignacion_formato || formatearFecha(asignacion.fecha_asignacion) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let asignacion">
+              <span
+                class="estado"
+                [class.activa]="asignacion.estado === 'Activa'"
+                [class.inactiva]="asignacion.estado === 'Inactiva'">
+                {{ asignacion.estado }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let asignacion">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="editarAsignacion(asignacion)">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="eliminarAsignacion(asignacion.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell sin-datos" colspan="7">
+              No hay asignaciones registradas
+            </td>
+          </tr>
+
+        </table>
+
+        <mat-paginator
+          [pageSizeOptions]="[5, 10, 20]"
+          [pageSize]="5"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</div>

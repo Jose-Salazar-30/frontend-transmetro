@@ -1,0 +1,228 @@
+<div class="tarjetas-page">
+
+  <h2 class="titulo-pagina">Gestión de Tarjetas del Transmetro</h2>
+
+  <mat-card class="card-formulario">
+    <mat-card-content>
+
+      <h3>{{ modoEditar ? 'Actualizar Tarjeta' : 'Nueva Tarjeta' }}</h3>
+      <p class="subtitulo">
+        {{ modoEditar ? 'Modifique los datos de la tarjeta seleccionada' : 'Registre una nueva tarjeta del sistema' }}
+      </p>
+
+      <form (ngSubmit)="guardarTarjeta()" class="formulario-tarjeta">
+
+        <mat-form-field appearance="outline">
+          <mat-label>Número de tarjeta</mat-label>
+          <input
+            matInput
+            name="numero_tarjeta"
+            [(ngModel)]="tarjeta.numero_tarjeta"
+            placeholder="Ejemplo: TM-0001">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Nombre del usuario</mat-label>
+          <input
+            matInput
+            name="nombre_usuario"
+            [(ngModel)]="tarjeta.nombre_usuario"
+            placeholder="Ingrese el nombre del usuario">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>DPI del usuario</mat-label>
+          <input
+            matInput
+            name="dpi_usuario"
+            [(ngModel)]="tarjeta.dpi_usuario"
+            placeholder="Ingrese el DPI">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Teléfono</mat-label>
+          <input
+            matInput
+            name="telefono"
+            [(ngModel)]="tarjeta.telefono"
+            placeholder="Ingrese el teléfono">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Correo</mat-label>
+          <input
+            matInput
+            type="email"
+            name="correo"
+            [(ngModel)]="tarjeta.correo"
+            placeholder="Ingrese el correo">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Saldo</mat-label>
+          <input
+            matInput
+            type="number"
+            step="0.01"
+            name="saldo"
+            [(ngModel)]="tarjeta.saldo"
+            placeholder="Ingrese el saldo">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Fecha de registro</mat-label>
+          <input
+            matInput
+            type="date"
+            name="fecha_registro"
+            [(ngModel)]="tarjeta.fecha_registro">
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Estado</mat-label>
+          <mat-select
+            name="estado"
+            [(ngModel)]="tarjeta.estado">
+            <mat-option value="Activa">Activa</mat-option>
+            <mat-option value="Inactiva">Inactiva</mat-option>
+            <mat-option value="Bloqueada">Bloqueada</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div class="botones-formulario">
+          <button mat-raised-button color="primary" type="submit">
+            <mat-icon>{{ modoEditar ? 'edit' : 'save' }}</mat-icon>
+            {{ modoEditar ? 'Actualizar Tarjeta' : 'Guardar Tarjeta' }}
+          </button>
+
+          <button
+            mat-stroked-button
+            color="warn"
+            type="button"
+            (click)="limpiarFormulario()">
+            <mat-icon>close</mat-icon>
+            Cancelar
+          </button>
+        </div>
+
+      </form>
+
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card class="card-tabla">
+    <mat-card-content>
+
+      <h3>Listado de Tarjetas</h3>
+      <p class="subtitulo">Datos cargados desde PostgreSQL</p>
+
+      <mat-form-field appearance="outline" class="buscador">
+        <mat-label>Buscar tarjeta</mat-label>
+        <input
+          matInput
+          placeholder="Buscar tarjeta"
+          (keyup)="aplicarFiltro($event)">
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+
+      <div class="tabla-contenedor">
+        <table mat-table [dataSource]="dataSource" class="tabla-tarjetas">
+
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>IDENTIFICACIÓN</th>
+            <td mat-cell *matCellDef="let tarjeta">{{ tarjeta.id }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="numero_tarjeta">
+            <th mat-header-cell *matHeaderCellDef>Número tarjeta</th>
+            <td mat-cell *matCellDef="let tarjeta">{{ tarjeta.numero_tarjeta }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="nombre_usuario">
+            <th mat-header-cell *matHeaderCellDef>Usuario</th>
+            <td mat-cell *matCellDef="let tarjeta">{{ tarjeta.nombre_usuario }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="dpi_usuario">
+            <th mat-header-cell *matHeaderCellDef>DPI</th>
+            <td mat-cell *matCellDef="let tarjeta">{{ tarjeta.dpi_usuario }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="telefono">
+            <th mat-header-cell *matHeaderCellDef>Teléfono</th>
+            <td mat-cell *matCellDef="let tarjeta">{{ tarjeta.telefono }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="correo">
+            <th mat-header-cell *matHeaderCellDef>Correo</th>
+            <td mat-cell *matCellDef="let tarjeta">{{ tarjeta.correo }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="saldo">
+            <th mat-header-cell *matHeaderCellDef>Saldo</th>
+            <td mat-cell *matCellDef="let tarjeta">
+              Q {{ tarjeta.saldo }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="estado">
+            <th mat-header-cell *matHeaderCellDef>Estado</th>
+            <td mat-cell *matCellDef="let tarjeta">
+              <span
+                class="estado"
+                [class.activa]="tarjeta.estado === 'Activa'"
+                [class.inactiva]="tarjeta.estado === 'Inactiva'"
+                [class.bloqueada]="tarjeta.estado === 'Bloqueada'">
+                {{ tarjeta.estado }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="fecha_registro">
+            <th mat-header-cell *matHeaderCellDef>Fecha registro</th>
+            <td mat-cell *matCellDef="let tarjeta">
+              {{ tarjeta.fecha_registro_formato || formatearFecha(tarjeta.fecha_registro) }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let tarjeta">
+              <button
+                mat-icon-button
+                color="primary"
+                (click)="editarTarjeta(tarjeta)">
+                <mat-icon>edit</mat-icon>
+              </button>
+
+              <button
+                mat-icon-button
+                color="warn"
+                (click)="eliminarTarjeta(tarjeta.id)">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+          <tr class="mat-row" *matNoDataRow>
+            <td class="mat-cell sin-datos" colspan="10">
+              No hay tarjetas registradas
+            </td>
+          </tr>
+
+        </table>
+
+        <mat-paginator
+          [pageSizeOptions]="[5, 10, 20]"
+          [pageSize]="5"
+          showFirstLastButtons>
+        </mat-paginator>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</div>
